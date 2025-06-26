@@ -1,0 +1,21 @@
+{
+    "name": "Shipping Calculator",
+    "short_name": "ShipCalc",
+    "description": "A tool to calculate shipping costs based on weight and zip code",
+    "start_url": "./ShippingCalculator.html",
+    "display": "standalone",
+    "background_color": "#23282d",
+    "theme_color": "#4c6faf",
+    "icons": [
+        {
+            "src": "./icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
