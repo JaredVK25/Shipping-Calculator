@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shipping Calculator Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #23282d;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #2f343a;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background-color: #4c6faf;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .admin-subtabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-subtab {
+            margin: 0 10px;
+            padding: 8px 16px;
+            background-color: #3a3f47;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .admin-subtab.active {
+            background-color: #4c6faf;
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2f343a;
+            margin-bottom: 30px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #444;
+            text-align: center;
+        }
+
+        th {
+            background-color: #3a3f47;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 6px;
+            background-color: #3a3f47;
+            border: 1px solid #666;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            margin: 10px 5px 0 0;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .remove-btn {
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background-color: #f39c12;
+            margin-left: 10px;
+        }
+
+        .calculator {
+            max-width: 500px;
+            margin: auto;
+            background-color: #2f343a;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #4CAF50;
+        }
+
+        .warning {
+            color: #ffc107;
+            font-size: 0.95em;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .shipping-options {
+            margin-top: 20px;
+            background-color: #3a3f47;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .shipping-option {
+            padding: 10px;
+            margin: 5px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .shipping-option:last-child {
+            border-bottom: none;
+        }
+
+        .option-service {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .option-cost {
+            font-weight: bold;
+        }
+
+        .option-delivery {
+            font-style: italic;
+            color: #bbb;
+        }
+
+        .import-export {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #3a3f47;
+            border-radius: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            background-color: #3a3f47;
+            border: 1px solid #666;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .format-example {
+            font-size: 0.8em;
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .quantity-control input {
+            width: 60px;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background-color: #4c6faf;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quantity-btn:hover {
+            background-color: #3a5a8a;
+        }
+
+        .order-summary {
+            background-color: #3a3f47;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .order-summary h4 {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            background-color: #3a3f47;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .toggle-btn.active {
+            background-color: #4c6faf;
+        }
+
+        .toggle-btn:hover {
+            background-color: #4a5e8c;
+        }
+
+        .weight-input {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .weight-input div {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .weight-input label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .weight-input input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Shipping Calculator Tool</h2>
+    <div class="tabs">
+        <div class="tab" onclick="triggerAdminAccess()">Admin Panel</div>
+        <div class="tab active" onclick="switchTab('user')">User Calculator</div>
+    </div>
+
+    <div id="admin" class="content">
+        <div id="adminLockScreen" style="text-align:center;padding:40px;">
+            <h3>🔐 Admin Panel Locked</h3>
+            <p>Enter the password to access this section:</p>
+            <input type="password" id="adminPassword" placeholder="Password" style="width:200px;">
+            <br><br>
+            <button class="btn" onclick="checkPassword()">Unlock</button>
+            <div id="passwordError" class="warning"></div>
+        </div>
+        <div id="adminContent" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>📦 Admin Panel</h3>
+                <button class="btn logout-btn" onclick="logoutAdmin()">Log Out</button>
+            </div>
+            <div class="admin-subtabs">
+                <div class="admin-subtab active" onclick="switchAdminTab('shipping')">Shipping Options</div>
+                <div class="admin-subtab" onclick="switchAdminTab('zipcodes')">Zip Code Mapping</div>
+            </div>
+
+            <div id="admin-shipping" class="admin-content" style="display:block;">
+                <div class="import-export">
+                    <h4>📤 Import Shipping Options (CSV)</h4>
+                    <p>Paste CSV data with columns:
+                        min_weight,max_weight,zone1,zone2,zone3,zone4,zone5,zone6,zone7,zone8,zone9,service,delivery,territory_delivery
+                    </p>
+                    <textarea id="csvData"
+                        placeholder="0,16,5.99,6.99,7.99,8.99,9.99,10.99,11.99,12.99,13.99,USPS First Class,3-5 business days,5-7 business days
+16,32,8.99,9.99,10.99,11.99,12.99,13.99,14.99,15.99,0,USPS Priority,2-3 business days,4-6 business days
+32,64,12.99,13.99,14.99,15.99,16.99,17.99,18.99,19.99,20.99,FedEx Ground,1-5 business days,3-7 business days"></textarea>
+                    <div class="format-example">Example format:
+                        0,16,5.99,6.99,7.99,8.99,9.99,10.99,11.99,12.99,13.99,USPS First Class,3-5 business days,5-7
+                        business days</div>
+                    <button class="btn" onclick="importFromCSV()">Import from CSV</button>
+                    <button class="btn" onclick="exportToCSV()">Export to CSV</button>
+                    <div id="csvError" class="warning"></div>
+                </div>
+
+                <button class="btn" onclick="addBoxRow()">+ Add Option</button>
+                <table id="boxTable">
+                    <thead>
+                        <tr>
+                            <th>Min Weight (oz)</th>
+                            <th>Max Weight (oz)</th>
+                            <th>Zone 1 ($)</th>
+                            <th>Zone 2 ($)</th>
+                            <th>Zone 3 ($)</th>
+                            <th>Zone 4 ($)</th>
+                            <th>Zone 5 ($)</th>
+                            <th>Zone 6 ($)</th>
+                            <th>Zone 7 ($)</th>
+                            <th>Zone 8 ($)</th>
+                            <th>Zone 9 ($)</th>
+                            <th>Shipping Service</th>
+                            <th>Estimated Delivery</th>
+                            <th>Territory Delivery</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <h3>⚖️ Item Weight Table</h3>
+                <button class="btn" onclick="addProductRow()">+ Add Product</button>
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Weight per Unit (oz)</th>
+                            <th>Points</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <h3>📊 Point Table</h3>
+                <button class="btn" onclick="addPointRow()">+ Add Point Rule</button>
+                <table id="pointTable">
+                    <thead>
+                        <tr>
+                            <th>Min Points</th>
+                            <th>Max Points</th>
+                            <th>Weight (oz)</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button class="btn" onclick="savePointTable()">💾 Save Point Table</button>
+
+                <button class="btn" onclick="saveAll()">💾 Save All</button>
+            </div>
+
+            <div id="admin-zipcodes" class="admin-content" style="display:none;">
+                <h3>📍 Zip Code to Zone Mapping</h3>
+                <div class="import-export">
+                    <h4>📤 Import Zip Code Mappings (CSV)</h4>
+                    <p>Paste CSV data with columns: zip_code,zone</p>
+                    <textarea id="zipCsvData" placeholder="00501,1
+00544,1
+00601,9
+00602,9"></textarea>
+                    <div class="format-example">Example format: 00501,1</div>
+                    <button class="btn" onclick="importZipCodes()">Import from CSV</button>
+                    <button class="btn" onclick="exportZipCodes()">Export to CSV</button>
+                    <div id="zipCsvError" class="warning"></div>
+                </div>
+                <table id="zipTable">
+                    <thead>
+                        <tr>
+                            <th>Zip Code</th>
+                            <th>Zone (1-9)</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button class="btn" onclick="saveZipCodes()">💾 Save Zip Codes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="user" class="content active">
+        <div class="calculator">
+            <div>
+                <label>Zip Code</label>
+                <input type="text" id="userZipCode" placeholder="Enter 5-digit zip code" maxlength="5">
+            </div>
+            <div class="toggle-switch">
+                <button class="toggle-btn active" onclick="toggleInputMode('products')">Products</button>
+                <button class="toggle-btn" onclick="toggleInputMode('weight')">Weight</button>
+            </div>
+            <div id="productInputs"></div>
+            <div id="weightInput" style="display:none;">
+                <div class="weight-input">
+                    <div>
+                        <label>Pounds</label>
+                        <input type="number" id="weightPounds" value="0" min="0" step="0.1">
+                    </div>
+                    <div>
+                        <label>Ounces</label>
+                        <input type="number" id="weightOunces" value="0" min="0" max="15.9" step="0.1"
+                            oninput="simplifyWeight()">
+                    </div>
+                </div>
+            </div>
+            <button class="btn" onclick="calculateShipping()">Calculate Shipping</button>
+            <button class="btn" onclick="resetForm()">Reset</button>
+            <div id="orderSummary" class="order-summary" style="display:none;">
+                <h4>Order Summary</h4>
+                <ul id="orderList"></ul>
+            </div>
+            <div id="shippingOptions" class="shipping-options"></div>
+            <div id="warning" class="warning"></div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            const tabSelector = id === 'admin' ?
+                '.tab[onclick="triggerAdminAccess()"]' :
+                `.tab[onclick="switchTab('${id}')"]`;
+            const tabElement = document.querySelector(tabSelector);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+
+            if (id === 'user') renderUserInputs();
+            if (id === 'admin') switchAdminTab('shipping');
+        }
+
+        function switchAdminTab(id) {
+            document.querySelectorAll('.admin-subtab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-content').forEach(c => c.style.display = 'none');
+            document.getElementById(`admin-${id}`).style.display = 'block';
+            document.querySelector(`.admin-subtab[onclick="switchAdminTab('${id}')"]`).classList.add('active');
+        }
+
+        function triggerAdminAccess() {
+            const access = localStorage.getItem('adminAccess');
+            const now = new Date().getTime();
+            const valid = 30 * 24 * 60 * 60 * 1000;
+            const saved = parseInt(localStorage.getItem('adminAccessTime') || "0");
+            if (access === "granted" && now - saved < valid) {
+                unlockAdminPanel();
+            } else {
+                document.getElementById('adminLockScreen').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'none';
+            }
+            switchTab('admin');
+        }
+
+        function checkPassword() {
+            if (document.getElementById('adminPassword').value === 'Paxaid1997') {
+                localStorage.setItem('adminAccess', 'granted');
+                localStorage.setItem('adminAccessTime', new Date().getTime().toString());
+                unlockAdminPanel();
+            } else {
+                document.getElementById('passwordError').innerText = "❌ Incorrect password.";
+            }
+        }
+
+        function unlockAdminPanel() {
+            document.getElementById('adminLockScreen').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            switchAdminTab('shipping');
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('adminAccess');
+            localStorage.removeItem('adminAccessTime');
+            location.reload();
+        }
+
+        function addBoxRow(data = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""]) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="number" value="${data[0]}" min="0"></td>
+                <td><input type="number" value="${data[1]}" min="0"></td>
+                <td><input type="number" value="${data[2]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[3]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[4]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[5]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[6]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[7]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[8]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[9]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[10]}" step="0.01" min="0"></td>
+                <td><input type="text" value="${data[11]}"></td>
+                <td><input type="text" value="${data[12]}"></td>
+                <td><input type="text" value="${data[13]}"></td>
+                <td><button class="remove-btn" onclick="this.parentElement.parentElement.remove()">✖</button></td>`;
+            document.querySelector('#boxTable tbody').appendChild(tr);
+        }
+
+        function addProductRow(data = ["", "", ""]) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" value="${data[0]}"></td>
+                <td><input type="number" value="${data[1]}" step="0.01" min="0"></td>
+                <td><input type="number" value="${data[2]}" step="1" min="0"></td>
+                <td><button class="remove-btn" onclick="this.parentElement.parentElement.remove()">✖</button></td>`;
+            document.querySelector('#productTable tbody').appendChild(tr);
+        }
+
+        function addPointRow(data = ["", "", ""]) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="number" value="${data[0]}" step="1" min="0"></td>
+                <td><input type="number" value="${data[1]}" step="1" min="0"></td>
+                <td><input type="number" value="${data[2]}" step="0.01" min="0"></td>
+                <td><button class="remove-btn" onclick="this.parentElement.parentElement.remove()">✖</button></td>`;
+            document.querySelector('#pointTable tbody').appendChild(tr);
+        }
+
+        function addZipRow(data = ["", ""]) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" value="${data[0]}" maxlength="5"></td>
+                <td><input type="number" value="${data[1]}" min="1" max="9"></td>
+                <td><button class="remove-btn" onclick="this.parentElement.parentElement.remove()">✖</button></td>`;
+            document.querySelector('#zipTable tbody').appendChild(tr);
+        }
+
+        function saveAll() {
+            const boxes = [...document.querySelectorAll('#boxTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            const products = [...document.querySelectorAll('#productTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            localStorage.setItem('shippingBoxes', JSON.stringify(boxes));
+            localStorage.setItem('shippingProducts', JSON.stringify(products));
+            savePointTable();
+            alert("Saved!");
+        }
+
+        function savePointTable() {
+            const points = [...document.querySelectorAll('#pointTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            localStorage.setItem('pointRules', JSON.stringify(points));
+            alert("Point Table Saved!");
+        }
+
+        function saveZipCodes() {
+            const zips = [...document.querySelectorAll('#zipTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            localStorage.setItem('zipCodeMappings', JSON.stringify(zips));
+            alert("Zip Codes Saved!");
+        }
+
+        function renderUserInputs() {
+            const data = JSON.parse(localStorage.getItem('shippingProducts') || '[]');
+            const container = document.getElementById('productInputs');
+            container.innerHTML = '';
+            if (data.length === 0) {
+                document.getElementById('warning').innerText = "⚠️ Add products in Admin Panel first.";
+                return;
+            }
+            document.getElementById('warning').innerText = '';
+            data.forEach(([name, weight, points]) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label>${name}</label>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="adjustQuantity('qty_${name}', -1)">-</button>
+                        <input type="number" id="qty_${name}" value="0" min="0">
+                        <button class="quantity-btn" onclick="adjustQuantity('qty_${name}', 1)">+</button>
+                    </div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function adjustQuantity(id, change) {
+            const input = document.getElementById(id);
+            let value = parseInt(input.value) + change;
+            if (value < 0) value = 0;
+            input.value = value;
+        }
+
+        let inputMode = 'products';
+        function toggleInputMode(mode) {
+            inputMode = mode;
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.toggle-btn[onclick="toggleInputMode('${mode}')"]`).classList.add('active');
+            document.getElementById('productInputs').style.display = mode === 'products' ? 'block' : 'none';
+            document.getElementById('weightInput').style.display = mode === 'weight' ? 'block' : 'none';
+            document.getElementById('warning').innerText = '';
+            resetForm();
+        }
+
+        function simplifyWeight() {
+            const ouncesInput = document.getElementById('weightOunces');
+            const poundsInput = document.getElementById('weightPounds');
+            let ounces = parseFloat(ouncesInput.value) || 0;
+            let pounds = parseFloat(poundsInput.value) || 0;
+
+            if (ounces > 15.9) {
+                const extraPounds = Math.floor(ounces / 16);
+                ounces = ounces % 16;
+                pounds += extraPounds;
+                poundsInput.value = pounds.toFixed(1);
+                ouncesInput.value = ounces.toFixed(1);
+            }
+        }
+
+        function calculateShipping() {
+            const products = JSON.parse(localStorage.getItem('shippingProducts') || '[]');
+            const boxes = JSON.parse(localStorage.getItem('shippingBoxes') || '[]');
+            const zipCodes = JSON.parse(localStorage.getItem('zipCodeMappings') || '[]');
+            const pointRules = JSON.parse(localStorage.getItem('pointRules') || '[]');
+            const zipCode = document.getElementById('userZipCode').value.trim();
+            let totalWeight = 0;
+            let totalPoints = 0;
+            let anyQty = false;
+            const orderItems = [];
+
+            // Validate zip code
+            if (!zipCode || !/^\d{5}$/.test(zipCode)) {
+                document.getElementById('warning').innerText = "⚠️ Please enter a valid 5-digit zip code.";
+                document.getElementById('shippingOptions').innerHTML = '';
+                document.getElementById('orderSummary').style.display = 'none';
+                return;
+            }
+
+            // Find zone for the zip code
+            const zipEntry = zipCodes.find(([zip]) => zip === zipCode);
+            if (!zipEntry) {
+                document.getElementById('warning').innerText = "⚠️ No zone mapping found for this zip code.";
+                document.getElementById('shippingOptions').innerHTML = '';
+                document.getElementById('orderSummary').style.display = 'none';
+                return;
+            }
+            const zone = parseInt(zipEntry[1]) - 1;
+
+            // Calculate weight based on input mode
+            if (inputMode === 'products') {
+                if (products.length === 0) {
+                    document.getElementById('warning').innerText = "⚠️ Add products in Admin Panel first.";
+                    document.getElementById('shippingOptions').innerHTML = '';
+                    document.getElementById('orderSummary').style.display = 'none';
+                    return;
+                }
+
+                products.forEach(([name, weight, points]) => {
+                    const qty = parseInt(document.getElementById(`qty_${name}`)?.value || "0");
+                    if (qty > 0) {
+                        orderItems.push({ name, qty });
+                        anyQty = true;
+                    }
+                    totalWeight += qty * (parseFloat(weight) || 0);
+                    totalPoints += qty * (parseInt(points) || 0);
+                });
+
+                if (!anyQty) {
+                    document.getElementById('warning').innerText = "⚠️ Please enter at least one product quantity.";
+                    document.getElementById('shippingOptions').innerHTML = '';
+                    document.getElementById('orderSummary').style.display = 'none';
+                    return;
+                }
+
+                const pointRule = pointRules.find(([min, max]) => totalPoints >= parseInt(min) && totalPoints <= parseInt(max));
+                if (pointRule) {
+                    totalWeight += parseFloat(pointRule[2]) || 0;
+                }
+            } else {
+                const pounds = parseFloat(document.getElementById('weightPounds').value) || 0;
+                const ounces = parseFloat(document.getElementById('weightOunces').value) || 0;
+                totalWeight = (pounds * 16) + ounces;
+                if (totalWeight <= 0) {
+                    document.getElementById('warning').innerText = "⚠️ Please enter a valid weight.";
+                    document.getElementById('shippingOptions').innerHTML = '';
+                    document.getElementById('orderSummary').style.display = 'none';
+                    return;
+                }
+                orderItems.push({ name: "Custom Weight", qty: 1 });
+                anyQty = true;
+            }
+
+            // Display order summary
+            const orderList = document.getElementById('orderList');
+            orderList.innerHTML = '';
+            orderItems.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} (Qty: ${item.qty})`;
+                orderList.appendChild(li);
+            });
+            document.getElementById('orderSummary').style.display = 'block';
+            document.getElementById('warning').innerText = '';
+
+            // Find suitable boxes
+            const suitableBoxes = [];
+            for (const box of boxes) {
+                if (box.length < 14) continue; // Skip invalid box data
+                const [min, max, z1, z2, z3, z4, z5, z6, z7, z8, z9, service, delivery, territory_delivery] = box;
+                const minW = parseFloat(min) || 0;
+                const maxW = parseFloat(max) || 0;
+                if (totalWeight >= minW && totalWeight <= maxW) {
+                    const costs = [
+                        parseFloat(z1) || 0, parseFloat(z2) || 0, parseFloat(z3) || 0,
+                        parseFloat(z4) || 0, parseFloat(z5) || 0, parseFloat(z6) || 0,
+                        parseFloat(z7) || 0, parseFloat(z8) || 0, parseFloat(z9) || 0
+                    ];
+                    if (costs[zone] === 0) continue; // Skip if zone cost is 0
+                    suitableBoxes.push({
+                        cost: costs[zone],
+                        service: service || "Unknown",
+                        delivery: zone === 8 ? (territory_delivery || delivery) : delivery
+                    });
+                }
+            }
+
+            const optionsContainer = document.getElementById('shippingOptions');
+            optionsContainer.innerHTML = '';
+            if (suitableBoxes.length === 0) {
+                optionsContainer.innerHTML = '<div class="shipping-option">No suitable shipping options found.</div>';
+                return;
+            }
+
+            suitableBoxes.sort((a, b) => a.cost - b.cost);
+            suitableBoxes.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'shipping-option';
+                optionDiv.innerHTML = `
+                    <div class="option-service">Zone ${zone + 1}: ${option.service}</div>
+                    <div class="option-cost">Cost: $${option.cost.toFixed(2)}</div>
+                    <div class="option-delivery">${option.delivery}</div>`;
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function resetForm() {
+            if (inputMode === 'products') {
+                document.querySelectorAll('#productInputs input[type=number]').forEach(i => i.value = 0);
+            } else {
+                document.getElementById('weightPounds').value = 0;
+                document.getElementById('weightOunces').value = 0;
+            }
+            document.getElementById('userZipCode').value = '';
+            document.getElementById('shippingOptions').innerHTML = '';
+            document.getElementById('orderSummary').style.display = 'none';
+            document.getElementById('warning').innerText = '';
+        }
+
+        function importFromCSV() {
+            const csv = document.getElementById('csvData').value.trim();
+            if (!csv) {
+                document.getElementById('csvError').innerText = "❌ Please enter CSV data";
+                return;
+            }
+
+            try {
+                const lines = csv.split('\n');
+                const data = [];
+                lines.forEach(line => {
+                    if (line.trim()) {
+                        const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
+                            .map(v => v.trim().replace(/^"|"$/g, ''));
+                        if (values.length >= 14) {
+                            data.push([
+                                values[0], values[1], // min_weight, max_weight
+                                values[2], values[3], values[4], values[5], values[6], // zone1-5
+                                values[7], values[8], values[9], values[10], // zone6-9
+                                values[11], // service
+                                values[12], // delivery
+                                values.slice(13).join(',') // territory_delivery
+                            ]);
+                        }
+                    }
+                });
+
+                if (data.length === 0) {
+                    document.getElementById('csvError').innerText = "❌ No valid data found";
+                    return;
+                }
+
+                document.querySelector('#boxTable tbody').innerHTML = '';
+                data.forEach(row => addBoxRow(row));
+                document.getElementById('csvError').innerText = `✅ Imported ${data.length} options`;
+                saveAll();
+            } catch (e) {
+                document.getElementById('csvError').innerText = `❌ Error: ${e.message}`;
+            }
+        }
+
+        function exportToCSV() {
+            const boxes = [...document.querySelectorAll('#boxTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            if (boxes.length === 0) {
+                document.getElementById('csvError').innerText = "❌ No shipping options to export";
+                return;
+            }
+
+            const csvContent = boxes.map(row =>
+                row.map((value, index) =>
+                    index >= 11 && value.includes(',') ? `"${value}"` : value
+                ).join(',')
+            ).join('\n');
+
+            document.getElementById('csvData').value = csvContent;
+            document.getElementById('csvError').innerText = "✅ Exported to CSV format";
+        }
+
+        function importZipCodes() {
+            const csv = document.getElementById('zipCsvData').value.trim();
+            if (!csv) {
+                document.getElementById('zipCsvError').innerText = "❌ Please enter CSV data";
+                return;
+            }
+
+            try {
+                const lines = csv.split('\n');
+                const data = [];
+                lines.forEach(line => {
+                    if (line.trim()) {
+                        const values = line.split(',')
+                            .map(v => v.trim().replace(/^"|"$/g, ''));
+                        if (values.length >= 2 && /^\d{5}$/.test(values[0]) && /^[1-9]$/.test(values[1])) {
+                            data.push([values[0], values[1]]);
+                        }
+                    }
+                });
+
+                if (data.length === 0) {
+                    document.getElementById('zipCsvError').innerText = "❌ No valid zip code mappings found";
+                    return;
+                }
+
+                document.querySelector('#zipTable tbody').innerHTML = '';
+                data.forEach(row => addZipRow(row));
+                document.getElementById('zipCsvError').innerText = `✅ Imported ${data.length} mappings`;
+                saveZipCodes();
+            } catch (e) {
+                document.getElementById('zipCsvError').innerText = `❌ Error: ${e.message}`;
+            }
+        }
+
+        function exportZipCodes() {
+            const zips = [...document.querySelectorAll('#zipTable tbody tr')]
+                .map(row => [...row.querySelectorAll('input')].map(i => i.value));
+            if (zips.length === 0) {
+                document.getElementById('zipCsvError').innerText = "❌ No zip code mappings to export";
+                return;
+            }
+
+            const csvContent = zips.map(row => row.join(',')).join('\n');
+            document.getElementById('zipCsvData').value = csvContent;
+            document.getElementById('zipCsvError').innerText = "✅ Exported to CSV format";
+        }
+
+        window.onload = function () {
+            const box = JSON.parse(localStorage.getItem('shippingBoxes') || '[]');
+            const prod = JSON.parse(localStorage.getItem('shippingProducts') || '[]');
+            const zips = JSON.parse(localStorage.getItem('zipCodeMappings') || '[]');
+            const points = JSON.parse(localStorage.getItem('pointRules') || '[]');
+            if (box.length === 0) addBoxRow(); else box.forEach(addBoxRow);
+            if (prod.length === 0) addProductRow(); else prod.forEach(addProductRow);
+            if (zips.length === 0) addZipRow(); else zips.forEach(addZipRow);
+            if (points.length === 0) addPointRow(); else points.forEach(addPointRow);
+            renderUserInputs();
+        };
+    </script>
+</body>
+
+</html>
