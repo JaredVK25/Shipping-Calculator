@@ -2,7 +2,7 @@
     "name": "Shipping Calculator",
     "short_name": "ShipCalc",
     "description": "A tool to calculate shipping costs based on weight and zip code",
-    "start_url": "./ShippingCalculator.html",
+    "start_url": "/Shipping-Calculator/",
     "display": "standalone",
     "background_color": "#23282d",
     "theme_color": "#4c6faf",
