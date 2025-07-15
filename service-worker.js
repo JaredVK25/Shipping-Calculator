@@ -1,6 +1,6 @@
 const CACHE_NAME = 'shipping-calculator-v1.0.0';
 const FILES_TO_CACHE = [
-    './ShippingCalculator.html',
+    './index.html',
     './manifest.json',
     './icon-192.png',
     './icon-512.png'
